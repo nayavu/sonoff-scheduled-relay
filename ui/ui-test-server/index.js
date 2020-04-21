@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 const port = 3000;
 
 var ctx = {
-    config : {
+    settings : {
         deviceName : 'deviceName',
         wifiSsid   : 'wifiSsid',
         wifiPass   : 'wifiPass',
@@ -15,17 +15,27 @@ var ctx = {
     },
     devices : {
         relay : {
-            config: {
+            settings: {
                 startTime: 0,
                 stopTime: 0
             },
             state: {
-                on: false,
+                power: false,
                 time: 'now'
             }
         }
     }
 };
+
+// run `node index.js` with these flags to simulate different device behavior
+
+// simulate fresh installation when there's no settings file yet
+const noSettings = process.argv ? process.argv.includes('--no-settings') : false;
+
+// simulate corrupted settings file
+const corruptedSettings = process.argv ? process.argv.includes('--corrupted-settings') : false;
+
+console.log(`No settings mode: ${noSettings}, corrupted settings mode: ${corruptedSettings}`);
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -33,35 +43,43 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/config', (req, res) => {
-    res.send(ctx.config);
-    // res.status(404).send(''); // if a fresh installation and there's no config file in the fs
-    // res.status(500).send(''); // failed to load/parse config
+app.get('/settings', (req, res) => {
+    if (noSettings) {
+        res.status(404).send(''); // if a fresh installation and there's no settings file yet in the FS
+    } else if (corruptedSettings) {
+        res.status(500).send(''); // failed to load/parse settings
+    } else {
+        res.send(ctx.settings);
+    }
 });
 
-app.post('/config', (req, res) => {
+app.post('/settings', (req, res) => {
     console.log(req.body);
     if (!req.body.deviceName) {
         res.status(400).send('');
         return;
     }
-    ctx.config = req.body;
+    ctx.settings = req.body;
     res.status(200).send();
 });
 
-app.get('/relay/config', (req, res) => {
-    // res.send(ctx.devices.relay.config);
-    res.status(404).send(''); // if a fresh installation and there's no config file in the fs
-    // res.status(500).send(''); // failed to load/parse config
+app.get('/relay/settings', (req, res) => {
+    if (noSettings) {
+        res.status(404).send(''); // if a fresh installation and there's no settings file yet in the FS
+    } else if (corruptedSettings) {
+        res.status(500).send(''); // failed to load/parse settings
+    } else {
+        res.send(ctx.devices.relay.settings);
+    }
 });
 
-app.post('/relay/config', (req, res) => {
+app.post('/relay/settings', (req, res) => {
     console.log(req.body);
-    ctx.devices.relay.config = req.body;
+    ctx.devices.relay.settings = req.body;
 
     const date = new Date();
     const now = date.getHours() * 60 + date.getMinutes();
-    ctx.devices.relay.state.on = now >= ctx.devices.relay.config.startTime && now <= ctx.devices.relay.config.stopTime;
+    ctx.devices.relay.state.power = now >= ctx.devices.relay.settings.startTime && now <= ctx.devices.relay.settings.stopTime;
 
     res.status(200).send();
 });

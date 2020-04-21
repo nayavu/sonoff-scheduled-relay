@@ -18,7 +18,7 @@ ScheduledRelay relay(&app, &configManager, RELAY_PIN);
 UiWebServer server;
 
 void setupServer() {
-    server.on("/relay/config", HTTP_GET, []() {
+    server.on("/relay/settings", HTTP_GET, []() {
         if (!relay.isPersisted()) {
             server.send(404);
             return;
@@ -33,7 +33,7 @@ void setupServer() {
         server.sendJsonResponse(200,  buf);
     });
 
-    server.on("/relay/config", HTTP_POST, []() {
+    server.on("/relay/settings", HTTP_POST, []() {
         bool res = relay.fromJson(server.arg("plain"));
         if (res) {
             app.notify();
@@ -45,11 +45,11 @@ void setupServer() {
     });
 
     server.on("/relay/state", HTTP_GET, []() {
-        String buf = String("{\"on\":") + (relay.on ? "true" : "false") + ",\"time\":\"" + relay.getFormattedTime() + "\"}";
+        String buf = String("{\"power\":") + (relay.power ? "true" : "false") + ",\"time\":\"" + relay.getFormattedTime() + "\"}";
         server.sendJsonResponse(200, buf);
     });
 
-    server.on("/config", HTTP_GET, []() {
+    server.on("/settings", HTTP_GET, []() {
         if (!configManager.isPersisted()) {
             server.send(404);
             return;
@@ -64,7 +64,7 @@ void setupServer() {
         server.sendJsonResponse(200,  buf);
     });
 
-    server.on("/config", HTTP_POST, []() {
+    server.on("/settings", HTTP_POST, []() {
         bool res = configManager.fromJson(server.arg("plain"));
         if (res) {
             app.notify();
@@ -77,9 +77,13 @@ void setupServer() {
 
     server.on("/reboot", HTTP_POST, []() {
         app.notify();
-        app.setState(APP_REBOOTING);
-
         server.send(200);
+
+        if (!strcmp(server.arg("config").c_str(), "true")) {
+            app.setState(APP_CONFIG);
+        } else {
+            app.setState(APP_REBOOTING);
+        }
     });
 
     server.onNotFound([]() {
@@ -102,14 +106,13 @@ void setup() {
         app.setState(APP_CONNECTING_WIFI);
     }
 
-    setupServer();
-
     relay.setup();
+    setupServer();
 }
 
 void loop() {
     app.loop();
     wifiManager.loop();
-    server.handleClient();
     relay.loop();
+    server.handleClient();
 }

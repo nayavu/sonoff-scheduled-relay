@@ -21,10 +21,10 @@ gulp.task('purify-css', () => {
 gulp.task('compress', function() {
     return gulp.src(['./dist/*.js', './dist/*.css'])
         .pipe(gzip())
-        .pipe(gulp.dest('./dist/spiffs'));
+        .pipe(gulp.dest('./dist/minimized'));
 });
 
 gulp.task('copy-files', function() {
     return gulp.src(['./dist/index.html', './dist/favicon.ico'])
-        .pipe(gulp.dest('./dist/spiffs'));
+        .pipe(gulp.dest('./dist/minimized'));
 });

@@ -3,26 +3,32 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ConfigComponent } from './config/config.component';
-import { DevicesComponent } from './devices/devices.component';
-import { FormsModule } from "@angular/forms";
+import { SettingsComponent } from './settings/settings.component';
+import { RelayComponent } from './relay/relay.component';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
-import { TimePipe } from "./devices/time.pipe";
+import { TimeInputComponent } from './common/time-input/time-input.component';
+import { NotificationComponent } from './common/notification/notification.component';
+import { NotificationService } from "./common/notification/notification.service";
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfigComponent,
-    DevicesComponent,
-    TimePipe
+    SettingsComponent,
+    RelayComponent,
+    TimeInputComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    NotificationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

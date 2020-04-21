@@ -1,0 +1,52 @@
+<h1>Relay</h1>
+
+<section>
+    <div class="spinner-border" role="status" *ngIf="loading">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+    <div class="border mb-2 p-2">
+        <form name="settings" *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSave()">
+            <div>
+                <div class="form-group">
+                    <label for="startTime">Start at</label>
+                    <app-time-input id="startTime" formControlName="startTime"></app-time-input>
+                </div>
+                <div class="form-group">
+                    <label for="stopTime">Stop at</label>
+                    <app-time-input id="stopTime" formControlName="stopTime"></app-time-input>
+                </div>
+            </div>
+
+            <app-notification></app-notification>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" [disabled]="!form.valid || saving">
+                    <ng-container *ngIf="saving">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Saving...
+                    </ng-container>
+                    <ng-container *ngIf="!saving">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="border mb-2 p-2"  *ngIf="state">
+        <div class="row">
+            <div class="col-sm-2">
+                Power:
+            </div>
+            <div class="col-sm-10">
+                <strong [class.power-off]="!state.power" [class.power-on]="state.power">{{ state.power ? 'On' : 'Off' }}</strong>
+            </div>
+            <div class="col-sm-2">
+                Time:
+            </div>
+            <div class="col-sm-10">
+                <strong>{{ state.time }}</strong>
+            </div>
+        </div>
+    </div>
+</section>

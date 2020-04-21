@@ -1,0 +1,59 @@
+<h3>Settings</h3>
+<section>
+    <div class="spinner-border" role="status" *ngIf="loading">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+    <form name="settings" *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSave()">
+        <div>
+            <div class="form-group">
+                <label for="deviceName">Device name *</label>
+                <input type="text" class="form-control" id="deviceName" formControlName="deviceName" maxlength="32" />
+            </div>
+        </div>
+
+        <div>
+            <div class="form-group">
+                <label for="wifiSsid">Wifi SSID *</label>
+                <input type="text" class="form-control" id="wifiSsid" formControlName="wifiSsid" maxlength="32"/>
+            </div>
+            <div class="form-group">
+                <label for="wifiPass">Wifi password</label>
+                <input type="text" class="form-control" id="wifiPass" formControlName="wifiPass" maxlength="64" />
+            </div>
+        </div>
+
+        <div>
+            <div class="form-group">
+                <label for="ntpHost">NTP host</label>
+                <input type="text" class="form-control" id="ntpHost" formControlName="ntpHost" maxlength="99"/>
+            </div>
+            <div class="form-group">
+                <label for="utcOffset">UTC offset (minutes)</label>
+                <app-time-input id="utcOffset" formControlName="utcOffset" allowNegative="true"></app-time-input>
+            </div>
+        </div>
+
+        <app-notification></app-notification>
+
+        <div class="form-row">
+            <div class="form-group col-md-9">
+                <button type="submit" class="btn btn-primary" [disabled]="!form.valid || saving">
+                    <ng-container *ngIf="saving">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Saving...
+                    </ng-container>
+                    <ng-container *ngIf="!saving">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+            <div class="form-group col-md-1">
+                <button type="button" class="btn btn-warning" (click)="reboot()">Reboot</button>
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" class="btn btn-warning" (click)="reboot(true)" title="Enforce config mode">Config mode</button>
+            </div>
+        </div>
+    </form>
+</section>

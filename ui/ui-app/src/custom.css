@@ -2,8 +2,11 @@
     margin-top: 1rem;
 }
 
-
 footer {
     text-align: center;
     font-size: 0.7rem;
+}
+
+input.ng-invalid, .ng-invalid > input {
+    border-color: red;
 }

@@ -8,6 +8,8 @@ void ScheduledRelay::setup() {
     _ntpClient = new NTPClient(_udp, _appConfig->config->ntpHost, _appConfig->config->utcOffset * 60, NTP_UPDATE_INTERVAL);
     _ntpClient->begin();
     pinMode(_relayPin, OUTPUT);
+
+    load();
 }
 
 void ScheduledRelay::loop() {
@@ -29,10 +31,10 @@ void ScheduledRelay::loop() {
     } else if (config->stopTime < config->startTime) {
         expectedState = minutesOfDay >= config->startTime || minutesOfDay < config->stopTime;
     }
-    if (expectedState != _on) {
-        _on = expectedState;
-        DEBUGV("Switching relay %s\r\n", _on ? "ON" : "OFF");
-        digitalWrite(_relayPin, _on);
+    if (expectedState != _power) {
+        _power = expectedState;
+        DEBUGV("Switching relay %s\r\n", _power ? "ON" : "OFF");
+        digitalWrite(_relayPin, _power);
     }
 }
 

@@ -18,7 +18,7 @@ private:
 
 public:
     UiWebServer() : ESP8266WebServer() { };
-    void begin() override;
+    void begin();
     void sendJsonResponse(byte code, String& content);
 };
 

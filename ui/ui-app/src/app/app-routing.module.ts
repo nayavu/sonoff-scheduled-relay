@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ConfigComponent } from "./config/config.component";
-import { DevicesComponent } from "./devices/devices.component";
+import { SettingsComponent } from "./settings/settings.component";
+import { RelayComponent } from "./relay/relay.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: '/devices', pathMatch: 'full' },
-  { path: 'devices', component: DevicesComponent },
-  { path: 'config', component: ConfigComponent }
+  { path: '', redirectTo: '/relay', pathMatch: 'full' },
+  { path: 'relay', component: RelayComponent },
+  { path: 'settings', component: SettingsComponent }
 ];
 
 @NgModule({

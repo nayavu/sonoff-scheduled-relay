@@ -28,13 +28,13 @@ private:
 
     bool _timeInitialised;
 
-    bool _on;
+    bool _power;
     byte _relayPin;
 public:
-    bool& on;
+    bool& power;
     String getFormattedTime();
 
-    ScheduledRelay(App* app, AppConfigManager* appConfig, byte relayPin) : ConfigManager("/schedule.cfg"), _app(app), _appConfig(appConfig), _relayPin(relayPin), on(_on) {};
+    ScheduledRelay(App* app, AppConfigManager* appConfig, byte relayPin) : ConfigManager("/schedule.cfg"), _app(app), _appConfig(appConfig), _relayPin(relayPin), power(_power) {};
 
     void setup();
     void loop();
